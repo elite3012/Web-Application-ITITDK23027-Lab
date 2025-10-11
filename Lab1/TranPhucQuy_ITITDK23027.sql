@@ -21,8 +21,9 @@ CREATE TABLE Register (
 
 CREATE TABLE Lecturer (
     LecturerID INT PRIMARY KEY,
-    LecturerName VARCHAR(100),
     DepartmentID INT
+    LecturerName VARCHAR(100),
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID)
 );
 
 CREATE TABLE Teach (
