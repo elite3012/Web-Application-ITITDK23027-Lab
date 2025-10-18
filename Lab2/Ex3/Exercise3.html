@@ -8,50 +8,56 @@
 		* {
 			margin: 0;
 			padding: 0;
+			box-sizing: border-box;
 		}
 		html {
-			background-color: #f0f0f0;
 			background: #e39416;
+			height: 100%;
+		}
+		body{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			padding: 20px;
 		}
 		h2 {
 			padding: 1em;
 			text-align: left;
+			font-weight: bold;
 		}
-		body{
-            align-items: center;
-		}
-		.container{
-			display: flex;
-			flex-direction: column;
+		.whole{
+			width: 1000px;
 			background: white;
-			border: 1px solid #d4af7a;
+			border: 2px solid #d4af7a;
 		}
 		header, footer {
             background: white;
             padding: 1em;
-            font-weight: bold;
-            border: 1px solid #d4af7a;
+            border-bottom: 2px solid #d4af7a;
         }
+		footer {
+			border-bottom: none;
+			border-top: 2px solid #d4af7a;
+		}
+		.container{
+			display: flex;
+			flex-direction: column;
+		}
 		.wraparound{
 			display: flex;
 			flex-direction: row;
-			justify-content: space-between;
-			min-height: 1000px;
+			min-height: 300px;
 		}
 		.main{
             padding: 1em;
-			width: 100em;
+			flex: 1;
+			border-left: 2px solid #d4af7a;
+			border-right: 2px solid #d4af7a;
 		}
 		.sidebar{
-			width: 20em;
-			border-right: 1px solid #d4af7a;
-			border-left: 1px solid #d4af7a;
-		}
-		.whole{
-			position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+			width: 200px;
+			padding: 1em;
 		}
 	</style>
 </head>

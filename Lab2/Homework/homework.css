@@ -134,7 +134,7 @@ main {
 /* Left Sidebar - Guest Speakers */
 .left-sidebar {
     flex: 0 0 180px;
-    background-color: #fff;
+    background-color: #fdf5e6;
     padding: 20px 15px;
     border-right: 2px solid #ccc;
 }
