@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>3-Column Flexbox Layout</title>
+	<meta charset="utf-8">
+	<link rel="icon" href="../images/favicon.ico">
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		html {
+			background-color: #f0f0f0;
+			background: #e39416;
+		}
+		h2 {
+			padding: 1em;
+			text-align: left;
+		}
+		body{
+            align-items: center;
+		}
+		.container{
+			display: flex;
+			flex-direction: column;
+			background: white;
+			border: 1px solid #d4af7a;
+		}
+		header, footer {
+            background: white;
+            padding: 1em;
+            font-weight: bold;
+            border: 1px solid #d4af7a;
+        }
+		.wraparound{
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			min-height: 1000px;
+		}
+		.main{
+            padding: 1em;
+			width: 100em;
+		}
+		.sidebar{
+			width: 20em;
+			border-right: 1px solid #d4af7a;
+			border-left: 1px solid #d4af7a;
+		}
+		.whole{
+			position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+		}
+	</style>
+</head>
+<body>
+	<div class="whole">
+		<header>
+			<h2>Header</h2>
+		</header>
+	
+		<div class="container">
+			<div class="wraparound">
+				<aside class="sidebar">
+					<h2>Sidebar A</h2>
+				</aside>
+				
+				<main class="main">
+					<h2>Main Content</h2>
+					
+				</main>
+		
+				<aside class="sidebar">
+					<h2>Sidebar B</h2>
+				</aside>
+			</div>
+			
+		</div>
+	
+		<footer>
+			<h2>Footer</h2>
+		</footer>
+	</div>
+
+	
+
+</body>
+</html>

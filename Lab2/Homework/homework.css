@@ -1,0 +1,306 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #800000;
+    color: #000;
+    line-height: 1.6;
+}
+
+/* Header styles */
+header {
+    background: linear-gradient(to bottom, #f2c896 0%, #f5d5a8 100%);
+    border-bottom: 3px solid #800000;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    gap: 15px;
+}
+
+.header-top img {
+    width: 80px;
+    height: auto;
+}
+
+.header-text h1 {
+    font-size: 28px;
+    color: #800000;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.header-text p {
+    font-size: 16px;
+    font-style: italic;
+    color: #000;
+}
+
+/* Navigation Bar */
+.main-nav {
+    background-color: #800000;
+    position: relative;
+}
+
+.main-nav > ul {
+    display: flex;
+    list-style: none;
+    justify-content: flex-start;
+    gap: 0;
+}
+
+.main-nav > ul > li {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.main-nav > ul > li > a {
+    display: block;
+    padding: 12px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    border-right: 1px solid #a00000;
+    transition: background-color 0.3s;
+}
+
+.main-nav > ul > li:last-child > a {
+    border-right: none;
+}
+
+.main-nav > ul > li > a:hover {
+    background-color: #a00000;
+}
+
+/* Dropdown submenu */
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #800000;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+.has-submenu:hover .submenu {
+    display: block;
+}
+
+.submenu li {
+    border-bottom: 1px solid #a00000;
+}
+
+.submenu li:last-child {
+    border-bottom: none;
+}
+
+.submenu a {
+    display: block;
+    padding: 10px 15px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: normal;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+    border-right: none !important;
+}
+
+.submenu a:hover {
+    background-color: #a00000;
+}
+
+/* Main container with flexbox */
+main {
+    display: flex;
+    background-color: #fdf5e6;
+    min-height: 500px;
+}
+
+/* Left Sidebar - Guest Speakers */
+.left-sidebar {
+    flex: 0 0 180px;
+    background-color: #fff;
+    padding: 20px 15px;
+    border-right: 2px solid #ccc;
+}
+
+.left-sidebar h2 {
+    font-size: 18px;
+    color: #800000;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.speaker-item {
+    margin-bottom: 20px;
+}
+
+.speaker-item h3 {
+    font-size: 14px;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+.speaker-item a {
+    display: block;
+    color: #0000ff;
+    text-decoration: underline;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.speaker-item img {
+    width: 100%;
+    max-width: 75px;
+    height: auto;
+    border: 1px solid #ccc;
+}
+
+/* Article - Main Content */
+article {
+    flex: 1;
+    padding: 20px 30px;
+    background-color: #fdf5e6;
+}
+
+article h2 {
+    font-size: 20px;
+    color: #800000;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+article h3 {
+    font-size: 18px;
+    color: #800000;
+    margin: 15px 0 10px 0;
+}
+
+article h4 {
+    font-size: 14px;
+    color: #000;
+    margin: 5px 0;
+}
+
+.mission p {
+    font-size: 13px;
+    margin-bottom: 10px;
+    text-align: justify;
+}
+
+.mission blockquote {
+    font-style: italic;
+    margin: 15px 0;
+    padding-left: 20px;
+    color: #333;
+}
+
+.speaker-month {
+    margin-top: 30px;
+    border-top: 2px solid #800000;
+    padding-top: 20px;
+}
+
+.speaker-month img {
+    float: right;
+    width: 240px;
+    height: auto;
+    margin: 0 0 15px 15px;
+    border: 1px solid #ccc;
+}
+
+.speaker-month p {
+    font-size: 13px;
+    text-align: justify;
+    margin-bottom: 10px;
+}
+
+.speaker-month a {
+    color: #0000ff;
+    text-decoration: underline;
+}
+
+.ticket-packages {
+    margin-top: 30px;
+    border-top: 2px solid #800000;
+    padding-top: 20px;
+    clear: both;
+}
+
+.ticket-packages h2 {
+    font-size: 18px;
+    color: #800000;
+    margin-bottom: 10px;
+}
+
+.ticket-packages ul {
+    list-style: disc;
+    padding-left: 40px;
+}
+
+.ticket-packages li {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+/* Right Sidebar - Navigation Links */
+.right-sidebar {
+    flex: 0 0 180px;
+    background-color: #800000;
+    padding: 0;
+}
+
+.right-sidebar h2 {
+    background-color: #800000;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 0;
+    border-bottom: 1px solid #a00000;
+}
+
+.side-nav ul {
+    list-style: none;
+}
+
+.side-nav li {
+    border-bottom: 1px solid #a00000;
+}
+
+.side-nav a {
+    display: block;
+    padding: 12px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.side-nav a:hover {
+    background-color: #a00000;
+}
+
+/* Footer */
+footer {
+    background-color: #800000;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    font-size: 12px;
+}
