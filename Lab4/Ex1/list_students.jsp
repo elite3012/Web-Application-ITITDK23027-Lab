@@ -174,7 +174,65 @@
             color: #c82333;
             text-decoration: underline;
         }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 20px;
+            padding: 20px 0;
+        }
+        
+        .pagination a, .pagination strong {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+        
+        .pagination a:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .pagination strong {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 768px) {
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 8px 5px;
+            }
+            .container {
+                padding: 15px;
+            }
+        }
     </style>
+    <script>
+        setTimeout(function() {
+            var messages = document.querySelectorAll('.success-message, .error-message');
+            messages.forEach(function(msg) {
+                msg.style.transition = 'opacity 0.5s';
+                msg.style.opacity = '0';
+                setTimeout(function() {
+                    msg.style.display = 'none';
+                }, 500);
+            });
+        }, 3000);
+    </script>
 </head>
 <body>
     <div class="container">
@@ -193,41 +251,86 @@
         %>
         
         <div class="header-actions">
-            <div></div>
-            <a href="add_student.jsp" class="btn-add">➕ Add New Student</a>
+            <form action="list_students.jsp" method="GET" style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" name="keyword" placeholder="🔍 Search by name or code..." 
+                       value="<%= request.getParameter("keyword") != null ? request.getParameter("keyword") : "" %>"
+                       style="padding: 10px; border: 2px solid #ddd; border-radius: 6px; flex: 1; font-size: 14px;">
+                <button type="submit" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Search</button>
+                <a href="list_students.jsp" style="padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">Clear</a>
+            </form>
+            <div style="display: flex; gap: 10px;">
+                <a href="export_csv.jsp" style="padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">📥 Export CSV</a>
+                <a href="add_student.jsp" class="btn-add">➕ Add New Student</a>
+            </div>
         </div>
         
         <%
+            String keyword = request.getParameter("keyword");
+            String pageParam = request.getParameter("page");
+            int currentPage = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
+            int recordsPerPage = 10;
+            int offset = (currentPage - 1) * recordsPerPage;
+            
             String dbURL = "jdbc:mysql://localhost:3306/student_management";
             String dbUser = "root";
             String dbPassword = "";
             
             Connection conn = null;
-            Statement stmt = null;
+            PreparedStatement pstmt = null;
+            PreparedStatement countStmt = null;
             ResultSet rs = null;
+            ResultSet countRs = null;
+            int totalRecords = 0;
             
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 
                 conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
                 
-                stmt = conn.createStatement();
+                String countSql;
+                String dataSql;
                 
-                String sql = "SELECT * FROM students ORDER BY id ASC";
-                rs = stmt.executeQuery(sql);
-                
-                int rowCount = 0;
-                if (rs.last()) {
-                    rowCount = rs.getRow();
-                    rs.beforeFirst();
+                if (keyword != null && !keyword.trim().isEmpty()) {
+                    countSql = "SELECT COUNT(*) as total FROM students WHERE full_name LIKE ? OR student_code LIKE ?";
+                    countStmt = conn.prepareStatement(countSql);
+                    countStmt.setString(1, "%" + keyword.trim() + "%");
+                    countStmt.setString(2, "%" + keyword.trim() + "%");
+                    countRs = countStmt.executeQuery();
+                    if (countRs.next()) {
+                        totalRecords = countRs.getInt("total");
+                    }
+                    
+                    dataSql = "SELECT * FROM students WHERE full_name LIKE ? OR student_code LIKE ? ORDER BY id ASC LIMIT ? OFFSET ?";
+                    pstmt = conn.prepareStatement(dataSql);
+                    pstmt.setString(1, "%" + keyword.trim() + "%");
+                    pstmt.setString(2, "%" + keyword.trim() + "%");
+                    pstmt.setInt(3, recordsPerPage);
+                    pstmt.setInt(4, offset);
+                } else {
+                    countSql = "SELECT COUNT(*) as total FROM students";
+                    countStmt = conn.prepareStatement(countSql);
+                    countRs = countStmt.executeQuery();
+                    if (countRs.next()) {
+                        totalRecords = countRs.getInt("total");
+                    }
+                    
+                    dataSql = "SELECT * FROM students ORDER BY id ASC LIMIT ? OFFSET ?";
+                    pstmt = conn.prepareStatement(dataSql);
+                    pstmt.setInt(1, recordsPerPage);
+                    pstmt.setInt(2, offset);
                 }
+                
+                rs = pstmt.executeQuery();
+                int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
         %>
         
         <div class="info-box">
             <strong>ℹ️ Database Status:</strong> Connected successfully | 
-            <strong>Total Students:</strong> <%= rowCount %>
+            <strong>Total Students:</strong> <%= totalRecords %> | 
+            <strong>Page:</strong> <%= currentPage %> of <%= totalPages %>
         </div>
         
+        <div class="table-responsive">
         <table>
             <thead>
                 <tr>
@@ -286,6 +389,46 @@
         %>
             </tbody>
         </table>
+        </div>
+        
+        <div class="pagination">
+            <% if (currentPage > 1) { 
+                String prevLink = "list_students.jsp?page=" + (currentPage - 1);
+                if (keyword != null && !keyword.trim().isEmpty()) {
+                    prevLink += "&keyword=" + keyword.trim();
+                }
+            %>
+                <a href="<%= prevLink %>">« Previous</a>
+            <% } %>
+            
+            <% 
+                int startPage = Math.max(1, currentPage - 2);
+                int endPage = Math.min(totalPages, currentPage + 2);
+                
+                for (int i = startPage; i <= endPage; i++) { 
+                    String pageLink = "list_students.jsp?page=" + i;
+                    if (keyword != null && !keyword.trim().isEmpty()) {
+                        pageLink += "&keyword=" + keyword.trim();
+                    }
+                    
+                    if (i == currentPage) { 
+            %>
+                        <strong><%= i %></strong>
+            <%      } else { %>
+                        <a href="<%= pageLink %>"><%= i %></a>
+            <%      } 
+                } 
+            %>
+            
+            <% if (currentPage < totalPages) { 
+                String nextLink = "list_students.jsp?page=" + (currentPage + 1);
+                if (keyword != null && !keyword.trim().isEmpty()) {
+                    nextLink += "&keyword=" + keyword.trim();
+                }
+            %>
+                <a href="<%= nextLink %>">Next »</a>
+            <% } %>
+        </div>
         
         <%
             } catch (ClassNotFoundException e) {
@@ -310,7 +453,15 @@
                 } catch (SQLException e) {}
                 
                 try {
-                    if (stmt != null) stmt.close();
+                    if (countRs != null) countRs.close();
+                } catch (SQLException e) {}
+                
+                try {
+                    if (pstmt != null) pstmt.close();
+                } catch (SQLException e) {}
+                
+                try {
+                    if (countStmt != null) countStmt.close();
                 } catch (SQLException e) {}
                 
                 try {

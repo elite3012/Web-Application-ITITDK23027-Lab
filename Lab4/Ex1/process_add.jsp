@@ -19,15 +19,31 @@
         studentCode = studentCode.trim();
         fullName = fullName.trim();
         
-        if (email != null) {
-            email = email.trim();
-            if (email.isEmpty()) email = null;
+        if (!studentCode.matches("[A-Z]{2}[0-9]{3,}")) {
+            errorMessage = "Invalid student code format. Must be 2 uppercase letters followed by 3+ digits (e.g., ST001, CS123).";
+            hasError = true;
         }
-        if (major != null) {
+        
+        if (!hasError && email != null) {
+            email = email.trim();
+            if (!email.isEmpty()) {
+                if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                    errorMessage = "Invalid email format. Please enter a valid email address.";
+                    hasError = true;
+                } else {
+                }
+            } else {
+                email = null;
+            }
+        }
+        
+        if (!hasError && major != null) {
             major = major.trim();
             if (major.isEmpty()) major = null;
         }
-        
+    }
+    
+    if (!hasError) {
         String dbURL = "jdbc:mysql://localhost:3306/student_management";
         String dbUser = "root";
         String dbPassword = "";

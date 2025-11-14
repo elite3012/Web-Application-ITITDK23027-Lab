@@ -195,10 +195,20 @@
             </div>
             
             <div class="button-group">
-                <button type="submit">💾 Add Student</button>
+                <button type="submit" id="submitBtn">💾 Add Student</button>
                 <a href="list_students.jsp" class="btn-cancel">✖ Cancel</a>
             </div>
         </form>
     </div>
+    
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            var btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Processing...';
+            btn.style.opacity = '0.6';
+            btn.style.cursor = 'not-allowed';
+        });
+    </script>
 </body>
 </html>

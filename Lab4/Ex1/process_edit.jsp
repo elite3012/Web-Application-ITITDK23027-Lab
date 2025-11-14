@@ -34,13 +34,24 @@
         
         if (email != null) {
             email = email.trim();
-            if (email.isEmpty()) email = null;
+            if (!email.isEmpty()) {
+                if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                    errorMessage = "Invalid email format. Please enter a valid email address.";
+                    hasError = true;
+                } else {
+                }
+            } else {
+                email = null;
+            }
         }
-        if (major != null) {
+        
+        if (!hasError && major != null) {
             major = major.trim();
             if (major.isEmpty()) major = null;
         }
-        
+    }
+    
+    if (!hasError) {
         String dbURL = "jdbc:mysql://localhost:3306/student_management";
         String dbUser = "root";
         String dbPassword = "";

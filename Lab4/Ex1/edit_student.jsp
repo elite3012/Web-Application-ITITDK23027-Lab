@@ -261,10 +261,20 @@
             </div>
             
             <div class="button-group">
-                <button type="submit">💾 Update Student</button>
+                <button type="submit" id="submitBtn">💾 Update Student</button>
                 <a href="list_students.jsp" class="btn-cancel">✖ Cancel</a>
             </div>
         </form>
+        
+        <script>
+            document.querySelector('form').addEventListener('submit', function(e) {
+                var btn = document.getElementById('submitBtn');
+                btn.disabled = true;
+                btn.textContent = '⏳ Updating...';
+                btn.style.opacity = '0.6';
+                btn.style.cursor = 'not-allowed';
+            });
+        </script>
         
         <%
                     } else {
