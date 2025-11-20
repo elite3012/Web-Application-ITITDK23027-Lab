@@ -10,11 +10,11 @@ public class Student {
     private String major;
     private Timestamp createdAt;
     
-    // No-arg constructor (required for JavaBean)
+    // empty constructor
     public Student() {
     }
     
-    // Constructor for creating new student (without ID)
+    // constructor with params
     public Student(String studentCode, String fullName, String email, String major) {
         this.studentCode = studentCode;
         this.fullName = fullName;
@@ -22,7 +22,7 @@ public class Student {
         this.major = major;
     }
     
-    // Getters and Setters
+    // getters & setters
     public int getId() {
         return id;
     }

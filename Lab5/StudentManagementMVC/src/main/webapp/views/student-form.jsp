@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         <c:choose>
-            <c:when test="${student != null}">Edit Student</c:when>
+            <c:when test="${student != null && student.id > 0}">Edit Student</c:when>
             <c:otherwise>Add New Student</c:otherwise>
         </c:choose>
     </title>
@@ -121,13 +121,91 @@
             color: #666;
             margin-top: 5px;
         }
+        
+        /* error msg styling */
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            display: block;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        
+        input.error-input,
+        select.error-input {
+            border-color: #dc3545;
+        }
+        
+        /* loading spinner */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
+    <script>
+        // stop double click
+        let isSubmitting = false;
+        
+        function handleFormSubmit(event) {
+            if (isSubmitting) {
+                event.preventDefault();
+                console.log("Form already submitting, blocked duplicate submission");
+                return false;
+            }
+            
+            isSubmitting = true;
+            console.log("Form submitted, blocking further submissions");
+            
+            // show loading
+            document.getElementById('loadingOverlay').classList.add('active');
+            
+            // disable submit button
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.6';
+            }
+            
+            return true;
+        }
+    </script>
 </head>
 <body>
+    <!-- spinner overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+    
     <div class="container">
         <h1>
             <c:choose>
-                <c:when test="${student != null}">
+                <c:when test="${student != null && student.id > 0}">
                     ✏️ Edit Student
                 </c:when>
                 <c:otherwise>
@@ -136,17 +214,17 @@
             </c:choose>
         </h1>
         
-        <form action="student" method="POST">
-            <!-- Hidden field for action -->
+        <form action="student" method="POST" onsubmit="return handleFormSubmit(event)">
+            <!-- action type -->
             <input type="hidden" name="action" 
-                   value="${student != null ? 'update' : 'insert'}">
+                   value="${student != null && student.id > 0 ? 'update' : 'insert'}">
             
-            <!-- Hidden field for ID (only for update) -->
-            <c:if test="${student != null}">
+            <!-- id for update -->
+            <c:if test="${student != null && student.id > 0}">
                 <input type="hidden" name="id" value="${student.id}">
             </c:if>
             
-            <!-- Student Code -->
+            <!-- code input -->
             <div class="form-group">
                 <label for="studentCode">
                     Student Code <span class="required">*</span>
@@ -155,12 +233,16 @@
                        id="studentCode" 
                        name="studentCode" 
                        value="${student.studentCode}"
-                       ${student != null ? 'readonly' : 'required'}
+                       class="${not empty errorCode ? 'error-input' : ''}"
+                       ${student != null && student.id > 0 ? 'readonly' : 'required'}
                        placeholder="e.g., SV001, IT123">
                 <p class="info-text">Format: 2 letters + 3+ digits</p>
+                <c:if test="${not empty errorCode}">
+                    <span class="error">${errorCode}</span>
+                </c:if>
             </div>
             
-            <!-- Full Name -->
+            <!-- name input -->
             <div class="form-group">
                 <label for="fullName">
                     Full Name <span class="required">*</span>
@@ -169,11 +251,15 @@
                        id="fullName" 
                        name="fullName" 
                        value="${student.fullName}"
+                       class="${not empty errorName ? 'error-input' : ''}"
                        required
                        placeholder="Enter full name">
+                <c:if test="${not empty errorName}">
+                    <span class="error">${errorName}</span>
+                </c:if>
             </div>
             
-            <!-- Email -->
+            <!-- email input -->
             <div class="form-group">
                 <label for="email">
                     Email <span class="required">*</span>
@@ -182,16 +268,20 @@
                        id="email" 
                        name="email" 
                        value="${student.email}"
+                       class="${not empty errorEmail ? 'error-input' : ''}"
                        required
                        placeholder="student@example.com">
+                <c:if test="${not empty errorEmail}">
+                    <span class="error">${errorEmail}</span>
+                </c:if>
             </div>
             
-            <!-- Major -->
+            <!-- major dropdown -->
             <div class="form-group">
                 <label for="major">
                     Major <span class="required">*</span>
                 </label>
-                <select id="major" name="major" required>
+                <select id="major" name="major" class="${not empty errorMajor ? 'error-input' : ''}" required>
                     <option value="">-- Select Major --</option>
                     <option value="Computer Science" 
                             ${student.major == 'Computer Science' ? 'selected' : ''}>
@@ -212,11 +302,11 @@
                 </select>
             </div>
             
-            <!-- Buttons -->
+            <!-- submit & cancel buttons -->
             <div class="button-group">
                 <button type="submit" class="btn btn-primary">
                     <c:choose>
-                        <c:when test="${student != null}">
+                        <c:when test="${student != null && student.id > 0}">
                             💾 Update Student
                         </c:when>
                         <c:otherwise>
