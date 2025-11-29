@@ -163,6 +163,44 @@ public class UserDAO {
     }
 
     /**
+     * Update user's password
+     * @param userId User ID
+     * @param newHashedPassword New hashed password
+     * @return true if update successful
+     */
+    public boolean updatePassword(int userId, String newHashedPassword) {
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, newHashedPassword);
+            pstmt.setInt(2, userId);
+            
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * Verify if plain password matches user's hashed password
+     * @param userId User ID
+     * @param plainPassword Plain text password to verify
+     * @return true if password matches
+     */
+    public boolean verifyPassword(int userId, String plainPassword) {
+        User user = getUserById(userId);
+        if (user != null && user.getPassword() != null) {
+            return BCrypt.checkpw(plainPassword, user.getPassword());
+        }
+        return false;
+    }
+
+    /**
      * Map ResultSet to User object
      */
     private User mapResultSetToUser(ResultSet rs) throws SQLException {

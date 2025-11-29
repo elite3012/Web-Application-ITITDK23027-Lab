@@ -290,10 +290,113 @@
             cursor: default;
             border-color: transparent;
         }
+        
+        /* navbar css */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .navbar h2 {
+            margin: 0;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+        
+        .role-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .role-admin {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .role-user {
+            background: #28a745;
+            color: white;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .navbar a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .btn-change-password {
+            background: #f39c12;
+        }
+        
+        .btn-change-password:hover {
+            background: #e67e22 !important;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- navbar with user info -->
+        <div class="navbar">
+            <h2>📚 Student Management System</h2>
+            <div class="navbar-right">
+                <div class="user-info">
+                    <span>Welcome, ${sessionScope.fullName}</span>
+                    <span class="role-badge role-${sessionScope.role}">
+                        ${sessionScope.role}
+                    </span>
+                </div>
+                <c:if test="${sessionScope.role eq 'admin'}">
+                    <a href="dashboard">Dashboard</a>
+                </c:if>
+                <a href="change-password" class="btn-change-password">🔒 Change Password</a>
+                <a href="logout">Logout</a>
+            </div>
+        </div>
+        
         <h1>📚 Student Management System</h1>
         <p class="subtitle">MVC Pattern with Jakarta EE & JSTL</p>
         
@@ -367,12 +470,14 @@
             </form>
         </div>
         
-        <!-- add button -->
-        <div style="margin-bottom: 20px;">
-            <a href="student?action=new" class="btn btn-primary">
-                ➕ Add New Student
-            </a>
-        </div>
+        <!-- add button - admin only -->
+        <c:if test="${sessionScope.role eq 'admin'}">
+            <div style="margin-bottom: 20px;">
+                <a href="student?action=new" class="btn btn-primary">
+                    ➕ Add New Student
+                </a>
+            </div>
+        </c:if>
         
         <!-- table to show students -->
         <c:choose>
@@ -425,7 +530,9 @@
                                     </c:if>
                                 </a>
                             </th>
-                            <th>Actions</th>
+                            <c:if test="${sessionScope.role eq 'admin'}">
+                                <th>Actions</th>
+                            </c:if>
                         </tr>
                     </thead>
                     <tbody>
@@ -436,18 +543,20 @@
                                 <td>${student.fullName}</td>
                                 <td>${student.email}</td>
                                 <td>${student.major}</td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="student?action=edit&id=${student.id}" class="btn btn-secondary">
-                                            ✏️ Edit
-                                        </a>
-                                        <a href="student?action=delete&id=${student.id}" 
-                                           class="btn btn-danger"
-                                           onclick="return confirm('Are you sure you want to delete this student?')">
-                                            🗑️ Delete
-                                        </a>
-                                    </div>
-                                </td>
+                                <c:if test="${sessionScope.role eq 'admin'}">
+                                    <td>
+                                        <div class="actions">
+                                            <a href="student?action=edit&id=${student.id}" class="btn btn-secondary">
+                                                ✏️ Edit
+                                            </a>
+                                            <a href="student?action=delete&id=${student.id}" 
+                                               class="btn btn-danger"
+                                               onclick="return confirm('Are you sure you want to delete this student?')">
+                                                🗑️ Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </c:if>
                             </tr>
                         </c:forEach>
                     </tbody>

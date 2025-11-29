@@ -34,6 +34,12 @@ public class DashboardController extends HttpServlet {
         }
 
         User user = (User) session.getAttribute("user");
+        
+        // Check if user is admin
+        if (!user.isAdmin()) {
+            response.sendRedirect("student?action=list&error=Access denied. Dashboard is for admins only.");
+            return;
+        }
 
         // Get statistics
         int totalStudents = studentDAO.getTotalStudents();

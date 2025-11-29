@@ -71,6 +71,20 @@
             background: #c0392b;
         }
         
+        .btn-change-password {
+            padding: 8px 20px;
+            background: #f39c12;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .btn-change-password:hover {
+            background: #e67e22;
+        }
+        
         .container {
             max-width: 1200px;
             margin: 30px auto;
@@ -194,6 +208,7 @@
                     ${sessionScope.role}
                 </span>
             </div>
+            <a href="change-password" class="btn-change-password">🔒 Change Password</a>
             <a href="logout" class="btn-logout">Logout</a>
         </div>
     </div>
