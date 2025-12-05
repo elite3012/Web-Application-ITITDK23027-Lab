@@ -91,6 +91,20 @@
             display: flex;
             justify-content: center;
         }
+        
+        /* Exercise 6: Validation error styles */
+        .error {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .form-group.has-error input,
+        .form-group.has-error select,
+        .form-group.has-error textarea {
+            border-color: #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -101,36 +115,39 @@
             <!-- Hidden ID field for updates -->
             <input type="hidden" th:field="*{id}" />
             
-            <div class="form-group">
+            <div class="form-group" th:classappend="${#fields.hasErrors('productCode')} ? 'has-error'">
                 <label for="productCode">Product Code *</label>
                 <input type="text" 
                        id="productCode" 
                        th:field="*{productCode}" 
-                       placeholder="Enter product code (e.g., P001)"
+                       placeholder="Enter product code (e.g., ABC123)"
                        required />
+                <span class="error" th:if="${#fields.hasErrors('productCode')}" th:errors="*{productCode}">Error</span>
             </div>
             
-            <div class="form-group">
+            <div class="form-group" th:classappend="${#fields.hasErrors('name')} ? 'has-error'">
                 <label for="name">Product Name *</label>
                 <input type="text" 
                        id="name" 
                        th:field="*{name}" 
-                       placeholder="Enter product name"
+                       placeholder="Enter product name (3-100 characters)"
                        required />
+                <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</span>
             </div>
             
-            <div class="form-group">
+            <div class="form-group" th:classappend="${#fields.hasErrors('price')} ? 'has-error'">
                 <label for="price">Price ($) *</label>
                 <input type="number" 
                        id="price" 
                        th:field="*{price}" 
                        step="0.01" 
-                       min="0"
+                       min="0.01"
                        placeholder="0.00"
                        required />
+                <span class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Error</span>
             </div>
             
-            <div class="form-group">
+            <div class="form-group" th:classappend="${#fields.hasErrors('quantity')} ? 'has-error'">
                 <label for="quantity">Quantity *</label>
                 <input type="number" 
                        id="quantity" 
@@ -138,19 +155,20 @@
                        min="0"
                        placeholder="0"
                        required />
+                <span class="error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}">Error</span>
             </div>
             
-            <div class="form-group">
+            <div class="form-group" th:classappend="${#fields.hasErrors('category')} ? 'has-error'">
                 <label for="category">Category *</label>
                 <select id="category" th:field="*{category}" required>
                     <option value="">Select category</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Furniture">Furniture</option>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Books">Books</option>
-                    <option value="Food">Food</option>
-                    <option value="Other">Other</option>
+                    <option th:each="cat : ${categories}" 
+                            th:value="${cat}" 
+                            th:text="${cat}">
+                        Category
+                    </option>
                 </select>
+                <span class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Error</span>
             </div>
             
             <div class="form-group">
